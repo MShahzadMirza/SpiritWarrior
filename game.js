@@ -57,28 +57,43 @@ function createGame() {
 
     warrior.position.y = 1;
 
+    // Spirit Energy System
+
+    let spiritEnergy = 0;
+
+    const energyText = document.getElementById('energy');
+
+    // Spirit Crystal
+
+    const crystal = BABYLON.MeshBuilder.CreateSphere(
+        'Spirit Crystal',
+        {
+            diameter: 0.5,
+        },
+        scene,
+    );
+
+    crystal.position = new BABYLON.Vector3(5, 0.5, 5);
+
+    let crystalCollected = false;
+
     // Camera follows warrior
     camera.lockedTarget = warrior;
 
     // Movement System
     const keys = {};
 
-    window.addEventListener("keydown",(event)=>{
+    window.addEventListener('keydown', (event) => {
+        const key = event.key.toLowerCase();
 
-    const key = event.key.toLowerCase();
+        keys[key] = true;
 
-    keys[key] = true;
-
-
-    // Jump
-    if(key === " " && !jumping){
-
-        velocityY = 0.25;
-        jumping = true;
-
-    }
-
-});
+        // Jump
+        if (key === ' ' && !jumping) {
+            velocityY = 0.25;
+            jumping = true;
+        }
+    });
 
     window.addEventListener('keyup', (event) => {
         keys[event.key.toLowerCase()] = false;
@@ -123,6 +138,23 @@ function createGame() {
             warrior.position.y = 1;
             velocityY = 0;
             jumping = false;
+        }
+
+        // Crystal Collection
+
+        const distance = BABYLON.Vector3.Distance(
+            warrior.position,
+            crystal.position,
+        );
+
+        if (distance < 1 && !crystalCollected) {
+            crystalCollected = true;
+
+            spiritEnergy += 10;
+
+            energyText.innerText = spiritEnergy;
+
+            crystal.dispose();
         }
     });
 

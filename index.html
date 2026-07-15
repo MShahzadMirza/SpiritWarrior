@@ -2,38 +2,17 @@
 <html>
 <head>
     <title>Spirit Warrior</title>
-
-    <style>
-        html, body {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            overflow: hidden;
-            background: black;
-        }
-
-        #gameCanvas {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        #gameTitle {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            color: white;
-            font-family: Arial, sans-serif;
-            font-size: 30px;
-            z-index: 10;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <div id="gameTitle">
     ⚔️ Spirit Warrior
+</div>
+
+<div id="energyBar">
+    Spirit Energy: <span id="energy">0</span>
 </div>
 
 <canvas id="gameCanvas"></canvas>
