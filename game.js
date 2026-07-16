@@ -142,6 +142,10 @@ function createGame() {
 
         // Crystal Collection
 
+        if (crystal.isEnabled()) {
+            crystal.rotation.y += 0.05;
+        }
+
         const distance = BABYLON.Vector3.Distance(
             warrior.position,
             crystal.position,
@@ -151,10 +155,21 @@ function createGame() {
             crystalCollected = true;
 
             spiritEnergy += 10;
-
             energyText.innerText = spiritEnergy;
 
-            crystal.dispose();
+            // Hide the crystal
+            crystal.setEnabled(false);
+
+            // Respawn after 5 seconds
+            setTimeout(() => {
+                crystal.position.x = Math.random() * 20 - 10;
+                crystal.position.z = Math.random() * 20 - 10;
+                crystal.position.y = 0.5;
+
+                crystal.setEnabled(true);
+
+                crystalCollected = false;
+            }, 5000);
         }
     });
 
