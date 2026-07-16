@@ -13,19 +13,6 @@ function createGame() {
     // Background
     scene.clearColor = new BABYLON.Color3(0.05, 0.05, 0.1);
 
-    // Camera
-    const camera = new BABYLON.FollowCamera(
-        'warriorCamera',
-        new BABYLON.Vector3(0, 5, -8),
-        scene,
-    );
-
-    camera.radius = 8;
-    camera.heightOffset = 4;
-    camera.rotationOffset = 180;
-    camera.cameraAcceleration = 0.05;
-    camera.maxCameraSpeed = 20;
-
     // Light
     const light = new BABYLON.HemisphericLight(
         'spiritLight',
@@ -77,8 +64,41 @@ function createGame() {
 
     let crystalCollected = false;
 
-    // Camera follows warrior
-    camera.lockedTarget = warrior;
+    // Camera
+    const camera = new BABYLON.ArcRotateCamera(
+        'camera',
+        Math.PI,
+        Math.PI / 3,
+        8,
+        warrior.position,
+        scene,
+    );
+
+    camera.attachControl(canvas, false);
+
+    camera.lowerRadiusLimit = 4;
+    camera.upperRadiusLimit = 12;
+
+    camera.wheelDeltaPercentage = 0.01;
+
+    // Click the canvas to lock the mouse
+    canvas.addEventListener('click', () => {
+        if (document.pointerLockElement !== canvas) {
+            canvas.requestPointerLock();
+        }
+    });
+
+    document.addEventListener('mousemove', (event) => {
+        if (document.pointerLockElement === canvas) {
+            const sensitivity = 0.002;
+
+            camera.alpha -= event.movementX * sensitivity;
+            camera.beta -= event.movementY * sensitivity;
+
+            // Prevent flipping upside down
+            camera.beta = Math.max(0.3, Math.min(Math.PI / 2.2, camera.beta));
+        }
+    });
 
     // Movement System
     const keys = {};
@@ -112,20 +132,34 @@ function createGame() {
         }
 
         // Movement
-        if (keys['w']) {
-            warrior.position.z += speed;
-        }
+        let moveX = 0;
+        let moveZ = 0;
 
-        if (keys['s']) {
-            warrior.position.z -= speed;
-        }
+        if (keys['w']) moveZ += 1;
+        if (keys['s']) moveZ -= 1;
+        if (keys['a']) moveX -= 1;
+        if (keys['d']) moveX += 1;
 
-        if (keys['a']) {
-            warrior.position.x -= speed;
-        }
+        if (moveX !== 0 || moveZ !== 0) {
+            // Camera forward direction
+            const forward = camera.getForwardRay().direction;
 
-        if (keys['d']) {
-            warrior.position.x += speed;
+            forward.y = 0;
+            forward.normalize();
+
+            // Camera right direction
+            const right = BABYLON.Vector3.Cross(
+                BABYLON.Axis.Y,
+                forward,
+            ).normalize();
+
+            // Final movement direction
+            const direction = forward.scale(moveZ).add(right.scale(moveX));
+
+            direction.normalize();
+
+            warrior.position.addInPlace(direction.scale(speed));
+            warrior.rotation.y = Math.atan2(direction.x, direction.z);
         }
 
         // Gravity
@@ -171,6 +205,8 @@ function createGame() {
                 crystalCollected = false;
             }, 5000);
         }
+
+        camera.target.copyFrom(warrior.position);
     });
 
     return scene;
