@@ -1,229 +1,304 @@
+// ======================================================
 // Spirit Warrior
-// Version 0.1
-// Basic 3D Prototype
+// Version 0.3
+// ======================================================
 
-const canvas = document.getElementById('gameCanvas');
-
+const canvas = document.getElementById("gameCanvas");
 const engine = new BABYLON.Engine(canvas, true);
 
-// Create Game World
 function createGame() {
-    const scene = new BABYLON.Scene(engine);
 
-    // Background
+    const scene = new BABYLON.Scene(engine);
     scene.clearColor = new BABYLON.Color3(0.05, 0.05, 0.1);
 
-    // Light
+    //==================================================
+    // LIGHT
+    //==================================================
+
     const light = new BABYLON.HemisphericLight(
-        'spiritLight',
+        "light",
         new BABYLON.Vector3(0, 1, 0),
-        scene,
+        scene
     );
 
     light.intensity = 1;
 
-    // Arena
-    const ground = BABYLON.MeshBuilder.CreateGround(
-        'spiritArena',
+    //==================================================
+    // GROUND
+    //==================================================
+
+    BABYLON.MeshBuilder.CreateGround(
+        "ground",
         {
             width: 30,
-            height: 30,
+            height: 30
         },
-        scene,
+        scene
     );
 
-    // Player (temporary warrior)
+    //==================================================
+    // PLAYER
+    //==================================================
+
     const warrior = BABYLON.MeshBuilder.CreateCapsule(
-        'Spirit Warrior',
+        "warrior",
         {
             height: 2,
-            radius: 0.5,
+            radius: 0.5
         },
-        scene,
+        scene
     );
 
     warrior.position.y = 1;
 
-    // Spirit Energy System
+    //==================================================
+    // CAMERA
+    //==================================================
 
-    let spiritEnergy = 0;
-
-    const energyText = document.getElementById('energy');
-
-    // Spirit Crystal
-
-    const crystal = BABYLON.MeshBuilder.CreateSphere(
-        'Spirit Crystal',
-        {
-            diameter: 0.5,
-        },
-        scene,
-    );
-
-    crystal.position = new BABYLON.Vector3(5, 0.5, 5);
-
-    let crystalCollected = false;
-
-    // Camera
     const camera = new BABYLON.ArcRotateCamera(
-        'camera',
+        "camera",
         Math.PI,
         Math.PI / 3,
         8,
         warrior.position,
-        scene,
+        scene
     );
 
     camera.attachControl(canvas, false);
 
     camera.lowerRadiusLimit = 4;
     camera.upperRadiusLimit = 12;
-
     camera.wheelDeltaPercentage = 0.01;
 
-    // Click the canvas to lock the mouse
-    canvas.addEventListener('click', () => {
+    // Pointer Lock
+
+    canvas.addEventListener("click", () => {
+
         if (document.pointerLockElement !== canvas) {
             canvas.requestPointerLock();
         }
+
     });
 
-    document.addEventListener('mousemove', (event) => {
+    document.addEventListener("mousemove", (event) => {
+
         if (document.pointerLockElement === canvas) {
+
             const sensitivity = 0.002;
 
             camera.alpha -= event.movementX * sensitivity;
             camera.beta -= event.movementY * sensitivity;
 
-            // Prevent flipping upside down
-            camera.beta = Math.max(0.3, Math.min(Math.PI / 2.2, camera.beta));
+            camera.beta = Math.max(
+                0.3,
+                Math.min(Math.PI / 2.2, camera.beta)
+            );
+
         }
+
     });
 
-    // Movement System
+    //==================================================
+    // UI
+    //==================================================
+
+    let spiritEnergy = 0;
+
+    const energyText = document.getElementById("energy");
+
+    //==================================================
+    // CRYSTAL
+    //==================================================
+
+    const crystal = BABYLON.MeshBuilder.CreateSphere(
+        "crystal",
+        {
+            diameter: 0.5
+        },
+        scene
+    );
+
+    crystal.position = new BABYLON.Vector3(5, 0.5, 5);
+
+    let crystalCollected = false;
+
+    //==================================================
+    // INPUT
+    //==================================================
+
     const keys = {};
 
-    window.addEventListener('keydown', (event) => {
+    window.addEventListener("keydown", (event) => {
+
         const key = event.key.toLowerCase();
 
         keys[key] = true;
 
-        // Jump
-        if (key === ' ' && !jumping) {
+        if (key === " " && !jumping) {
+
             velocityY = 0.25;
             jumping = true;
+
         }
+
     });
 
-    window.addEventListener('keyup', (event) => {
+    window.addEventListener("keyup", (event) => {
+
         keys[event.key.toLowerCase()] = false;
+
     });
 
-    // Player Physics
+    //==================================================
+    // PLAYER PHYSICS
+    //==================================================
+
     let velocityY = 0;
     let jumping = false;
 
+    //==================================================
+    // GAME LOOP
+    //==================================================
+
     scene.onBeforeRenderObservable.add(() => {
-        let speed = 0.08;
 
-        // Running
-        if (keys['shift']) {
-            speed = 0.15;
-        }
+        //------------------------------------------
+        // Speed
+        //------------------------------------------
 
-        // Movement
+        let speed = keys["shift"] ? 0.15 : 0.08;
+
+        //------------------------------------------
+        // Movement Input
+        //------------------------------------------
+
         let moveX = 0;
         let moveZ = 0;
 
-        if (keys['w']) moveZ += 1;
-        if (keys['s']) moveZ -= 1;
-        if (keys['a']) moveX -= 1;
-        if (keys['d']) moveX += 1;
+        if (keys["w"]) moveZ += 1;
+        if (keys["s"]) moveZ -= 1;
+        if (keys["a"]) moveX -= 1;
+        if (keys["d"]) moveX += 1;
+
+        //------------------------------------------
+        // Camera Relative Movement
+        //------------------------------------------
 
         if (moveX !== 0 || moveZ !== 0) {
-            // Camera forward direction
+
             const forward = camera.getForwardRay().direction;
 
             forward.y = 0;
             forward.normalize();
 
-            // Camera right direction
             const right = BABYLON.Vector3.Cross(
                 BABYLON.Axis.Y,
-                forward,
+                forward
             ).normalize();
 
-            // Final movement direction
-            const direction = forward.scale(moveZ).add(right.scale(moveX));
+            const direction = forward
+                .scale(moveZ)
+                .add(right.scale(moveX));
 
             direction.normalize();
 
-            warrior.position.addInPlace(direction.scale(speed));
-            const targetRotation = Math.atan2(direction.x, direction.z);
+            warrior.position.addInPlace(
+                direction.scale(speed)
+            );
+
+            const targetRotation = Math.atan2(
+                direction.x,
+                direction.z
+            );
 
             warrior.rotation.y = BABYLON.Scalar.Lerp(
                 warrior.rotation.y,
                 targetRotation,
                 0.15
             );
-            // Gravity
-            velocityY -= 0.01;
 
-            warrior.position.y += velocityY;
+        }
 
-            // Ground detection
-            if (warrior.position.y <= 1) {
-                warrior.position.y = 1;
-                velocityY = 0;
-                jumping = false;
-            }
+        //------------------------------------------
+        // Gravity
+        //------------------------------------------
 
-            // Crystal Collection
+        velocityY -= 0.01;
 
-            if (crystal.isEnabled()) {
-                crystal.rotation.y += 0.05;
-            }
+        warrior.position.y += velocityY;
 
-            const distance = BABYLON.Vector3.Distance(
-                warrior.position,
-                crystal.position,
-            );
+        if (warrior.position.y <= 1) {
 
-            if (distance < 1 && !crystalCollected) {
-                crystalCollected = true;
+            warrior.position.y = 1;
+            velocityY = 0;
+            jumping = false;
 
-                spiritEnergy += 10;
-                energyText.innerText = spiritEnergy;
+        }
 
-                // Hide the crystal
-                crystal.setEnabled(false);
+        //------------------------------------------
+        // Crystal Rotation
+        //------------------------------------------
 
-                // Respawn after 5 seconds
-                setTimeout(() => {
-                    crystal.position.x = Math.random() * 20 - 10;
-                    crystal.position.z = Math.random() * 20 - 10;
-                    crystal.position.y = 0.5;
+        if (crystal.isEnabled()) {
 
-                    crystal.setEnabled(true);
+            crystal.rotation.y += 0.05;
 
-                    crystalCollected = false;
-                }, 5000);
-            }
+        }
 
-            camera.target.copyFrom(warrior.position);
-        });
+        //------------------------------------------
+        // Crystal Collection
+        //------------------------------------------
+
+        const distance = BABYLON.Vector3.Distance(
+            warrior.position,
+            crystal.position
+        );
+
+        if (distance < 1 && !crystalCollected) {
+
+            crystalCollected = true;
+
+            spiritEnergy += 10;
+
+            energyText.innerText = spiritEnergy;
+
+            crystal.setEnabled(false);
+
+            setTimeout(() => {
+
+                crystal.position.x = Math.random() * 20 - 10;
+                crystal.position.z = Math.random() * 20 - 10;
+
+                crystal.setEnabled(true);
+
+                crystalCollected = false;
+
+            }, 5000);
+
+        }
+
+        //------------------------------------------
+        // Camera Follow
+        //------------------------------------------
+
+        camera.target.copyFrom(warrior.position);
+
+    });
 
     return scene;
+
 }
 
 const scene = createGame();
 
-// Game Loop
 engine.runRenderLoop(() => {
+
     scene.render();
+
 });
 
-// Resize
-window.addEventListener('resize', () => {
+window.addEventListener("resize", () => {
+
     engine.resize();
+
 });
