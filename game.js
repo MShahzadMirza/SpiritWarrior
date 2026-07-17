@@ -159,55 +159,59 @@ function createGame() {
             direction.normalize();
 
             warrior.position.addInPlace(direction.scale(speed));
-            warrior.rotation.y = Math.atan2(direction.x, direction.z);
-        }
+            const targetRotation = Math.atan2(direction.x, direction.z);
 
-        // Gravity
-        velocityY -= 0.01;
+            warrior.rotation.y = BABYLON.Scalar.Lerp(
+                warrior.rotation.y,
+                targetRotation,
+                0.15
+            );
+            // Gravity
+            velocityY -= 0.01;
 
-        warrior.position.y += velocityY;
+            warrior.position.y += velocityY;
 
-        // Ground detection
-        if (warrior.position.y <= 1) {
-            warrior.position.y = 1;
-            velocityY = 0;
-            jumping = false;
-        }
+            // Ground detection
+            if (warrior.position.y <= 1) {
+                warrior.position.y = 1;
+                velocityY = 0;
+                jumping = false;
+            }
 
-        // Crystal Collection
+            // Crystal Collection
 
-        if (crystal.isEnabled()) {
-            crystal.rotation.y += 0.05;
-        }
+            if (crystal.isEnabled()) {
+                crystal.rotation.y += 0.05;
+            }
 
-        const distance = BABYLON.Vector3.Distance(
-            warrior.position,
-            crystal.position,
-        );
+            const distance = BABYLON.Vector3.Distance(
+                warrior.position,
+                crystal.position,
+            );
 
-        if (distance < 1 && !crystalCollected) {
-            crystalCollected = true;
+            if (distance < 1 && !crystalCollected) {
+                crystalCollected = true;
 
-            spiritEnergy += 10;
-            energyText.innerText = spiritEnergy;
+                spiritEnergy += 10;
+                energyText.innerText = spiritEnergy;
 
-            // Hide the crystal
-            crystal.setEnabled(false);
+                // Hide the crystal
+                crystal.setEnabled(false);
 
-            // Respawn after 5 seconds
-            setTimeout(() => {
-                crystal.position.x = Math.random() * 20 - 10;
-                crystal.position.z = Math.random() * 20 - 10;
-                crystal.position.y = 0.5;
+                // Respawn after 5 seconds
+                setTimeout(() => {
+                    crystal.position.x = Math.random() * 20 - 10;
+                    crystal.position.z = Math.random() * 20 - 10;
+                    crystal.position.y = 0.5;
 
-                crystal.setEnabled(true);
+                    crystal.setEnabled(true);
 
-                crystalCollected = false;
-            }, 5000);
-        }
+                    crystalCollected = false;
+                }, 5000);
+            }
 
-        camera.target.copyFrom(warrior.position);
-    });
+            camera.target.copyFrom(warrior.position);
+        });
 
     return scene;
 }
