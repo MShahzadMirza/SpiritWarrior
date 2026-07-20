@@ -29,6 +29,7 @@ function createGame() {
 
     BABYLON.MeshBuilder.CreateGround(
         "ground",
+
         {
             width: 30,
             height: 30
@@ -36,20 +37,34 @@ function createGame() {
         scene
     );
 
-    //==================================================
-    // PLAYER
-    //==================================================
+   //==================================================
+// PLAYER
+//==================================================
 
-    const warrior = BABYLON.MeshBuilder.CreateCapsule(
-        "warrior",
-        {
-            height: 2,
-            radius: 0.5
-        },
-        scene
-    );
+let warrior = null;
 
-    warrior.position.y = 1;
+BABYLON.SceneLoader.ImportMesh(
+    "",
+    "assets/models/",
+    "warrior.glb",
+    scene,
+    function (meshes, particleSystems, skeletons, animationGroups) {
+
+        console.log("Meshes:", meshes);
+        console.log("Animation Groups:", animationGroups);
+
+        warrior = meshes[0];
+
+        warrior.scaling = new BABYLON.Vector3(1, 1, 1);
+        warrior.position = new BABYLON.Vector3(0, 0, 0);
+
+        // Play first animation if one exists
+        if (animationGroups.length > 0) {
+            animationGroups[0].start(true);
+        }
+
+    }
+);
 
     //==================================================
     // CAMERA
