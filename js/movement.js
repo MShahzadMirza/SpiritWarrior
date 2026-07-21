@@ -94,6 +94,11 @@ function updateMovement(camera) {
             0.18
         );
 
+        console.log(
+            "Current:", warrior.rotation.y.toFixed(2),
+            "Target:", targetRotation.toFixed(2)
+        );
+
     } else {
 
         playAnimation("CharacterArmature|Idle");

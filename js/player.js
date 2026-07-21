@@ -22,8 +22,18 @@ function createPlayer(scene, camera) {
             console.log("Meshes:", meshes);
             console.log("Animation Groups:", animationGroups);
 
+
+            meshes.forEach((mesh, i) => {
+                console.log(i, mesh.name);
+            });
+
             // Keep EXACTLY like your original project
-            warrior = meshes[0];
+            warrior = meshes.find(mesh => mesh.name === "__root__");
+            console.log("Warrior:", warrior.name);
+            console.log("Quaternion:", warrior.rotationQuaternion);
+
+            warrior.rotationQuaternion = null;
+            warrior.rotation.y = Math.PI;   // keep the model facing the correct direction if needed
 
             warrior.position = new BABYLON.Vector3(0, 1, 0);
             warrior.scaling = new BABYLON.Vector3(1, 1, 1);
