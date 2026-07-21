@@ -37,34 +37,39 @@ function createGame() {
         scene
     );
 
-   //==================================================
-// PLAYER
-//==================================================
+    //==================================================
+    // PLAYER
+    //==================================================
 
-let warrior = null;
+    let warrior = null;
 
-BABYLON.SceneLoader.ImportMesh(
-    "",
-    "assets/models/",
-    "warrior.glb",
-    scene,
-    function (meshes, particleSystems, skeletons, animationGroups) {
+    BABYLON.SceneLoader.ImportMesh(
+        "",
+        "assets/models/",
+        "warrior.glb",
+        scene,
+        function (meshes, particleSystems, skeletons, animationGroups) {
 
-        console.log("Meshes:", meshes);
-        console.log("Animation Groups:", animationGroups);
+            console.log("Meshes:", meshes);
+            console.log("Animation Groups:", animationGroups);
 
-        warrior = meshes[0];
+            warrior = meshes[0];
 
-        warrior.scaling = new BABYLON.Vector3(1, 1, 1);
-        warrior.position = new BABYLON.Vector3(0, 0, 0);
+            warrior.position = new BABYLON.Vector3(0, 1, 0);
 
-        // Play first animation if one exists
-        if (animationGroups.length > 0) {
-            animationGroups[0].start(true);
+            // Scale may need adjustment later
+            warrior.scaling = new BABYLON.Vector3(1, 1, 1);
+
+            // Camera follows the player
+            camera.lockedTarget = warrior;
+
+            // Play first animation
+            if (animationGroups.length > 0) {
+                animationGroups[0].start(true);
+            }
+
         }
-
-    }
-);
+    );
 
     //==================================================
     // CAMERA
@@ -75,7 +80,7 @@ BABYLON.SceneLoader.ImportMesh(
         Math.PI,
         Math.PI / 3,
         8,
-        warrior.position,
+        new BABYLON.Vector3(0, 1, 0),
         scene
     );
 
@@ -176,6 +181,9 @@ BABYLON.SceneLoader.ImportMesh(
     //==================================================
 
     scene.onBeforeRenderObservable.add(() => {
+
+        if (!warrior) return;
+
 
         //------------------------------------------
         // Speed
