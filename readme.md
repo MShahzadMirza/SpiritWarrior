@@ -284,3 +284,122 @@ First playable level
 Enemy camp
 Collectibles
 Save system
+
+
+✅ v0.4.1 (First Build)
+
+This version will include:
+
+✅ Clean architecture
+✅ playerRoot
+✅ Load warrior.glb
+✅ Third-person camera
+✅ Camera-relative movement
+✅ Smooth rotation
+✅ Idle animation
+✅ Walk animation
+✅ Run animation
+✅ Stable codebase
+
+This will replace your current game.js.
+
+v0.4.2
+Sprint improvements
+Jump
+Better camera smoothing
+Ground collision
+
+
+
+Project Structure
+
+Create a new folder called js.
+
+Your project should look like this:
+
+SpiritWarrior/
+│
+├── index.html
+├── style.css
+│
+├── js/
+│   ├── game.js
+│   ├── player.js
+│   ├── camera.js
+│   ├── input.js
+│   └── world.js
+│
+└── assets/
+    └── models/
+        └── warrior.glb
+Step 2 — Update index.html
+
+Replace your script section with this:
+
+<script src="https://cdn.babylonjs.com/babylon.js"></script>
+<script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+
+<script src="js/input.js"></script>
+<script src="js/camera.js"></script>
+<script src="js/world.js"></script>
+<script src="js/player.js"></script>
+<script src="js/game.js"></script>
+
+The order matters because game.js will use the functions defined in the other files.
+
+Step 3 — Create empty files
+
+Inside the js folder, create these five files:
+
+game.js
+player.js
+camera.js
+input.js
+world.js
+
+Leave them empty for now.
+
+Step 4 — Development Plan
+
+We'll build them in this order:
+
+📁 world.js
+Lights
+Ground
+Sky
+Environment
+📁 camera.js
+Third-person follow camera
+Mouse look
+Camera smoothing
+Zoom
+📁 input.js
+Keyboard
+Mouse
+Sprint
+Attack buttons
+📁 player.js
+Load warrior.glb
+Animation Manager
+Movement
+Rotation
+Player states
+📁 game.js
+Creates the scene
+Calls all the other systems
+Runs the game loop
+
+
+
+Here's the roadmap I propose:
+
+✅ Foundation (almost finished)
+🎥 Third-person camera that smoothly follows the player
+🗺️ Better terrain (instead of a flat plane)
+⚔️ Sword combat
+👹 Enemy AI
+✨ Spirit Energy system
+🌳 Beautiful environment (trees, rocks, grass)
+📜 Quests and NPCs
+💥 Jujutsu-style spirit abilities
+🏰 First playable level
