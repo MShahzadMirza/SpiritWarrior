@@ -63,10 +63,14 @@ function createGame() {
             // Camera follows the player
             camera.lockedTarget = warrior;
 
+            animationGroups.forEach(animation => {
+                animation.stop();
+            });
+
             // Play first animation
-            if (animationGroups.length > 0) {
-                animationGroups[0].start(true);
-            }
+            // if (animationGroups.length > 0) {
+            //     animationGroups[0].start(true);
+            // }
 
         }
     );
