@@ -58,6 +58,7 @@ function createGame() {
         if (!warrior) return;
 
         updateMovement(camera);
+        updateCamera(camera);
 
         //------------------------------------------
         // Crystal Rotation

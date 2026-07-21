@@ -61,15 +61,17 @@ function updateMovement(camera) {
 
         }
 
-        const forward = camera.getForwardRay().direction;
-
-        forward.y = 0;
-        forward.normalize();
-
-        const right = BABYLON.Vector3.Cross(
-            BABYLON.Axis.Y,
-            forward
+        const forward = new BABYLON.Vector3(
+            Math.sin(cameraYaw),
+            0,
+            Math.cos(cameraYaw)
         ).normalize();
+
+        const right = new BABYLON.Vector3(
+            forward.z,
+            0,
+            -forward.x
+        );
 
         const direction = forward
             .scale(moveZ)
@@ -89,7 +91,7 @@ function updateMovement(camera) {
         warrior.rotation.y = BABYLON.Scalar.Lerp(
             warrior.rotation.y,
             targetRotation,
-            0.15
+            0.18
         );
 
     } else {
