@@ -5,11 +5,15 @@
 
 const canvas = document.getElementById("gameCanvas");
 const engine = new BABYLON.Engine(canvas, true);
+let warrior = null;
+let animations = {};
+let currentAnimation = "";
 
 function createGame() {
 
     const scene = new BABYLON.Scene(engine);
     scene.clearColor = new BABYLON.Color3(0.05, 0.05, 0.1);
+
 
     //==================================================
     // LIGHT
@@ -41,8 +45,6 @@ function createGame() {
     // PLAYER
     //==================================================
 
-    let warrior = null;
-
     BABYLON.SceneLoader.ImportMesh(
         "",
         "assets/models/",
@@ -55,6 +57,8 @@ function createGame() {
 
             warrior = meshes[0];
 
+            console.log(meshes);
+
             warrior.position = new BABYLON.Vector3(0, 1, 0);
 
             // Scale may need adjustment later
@@ -63,9 +67,19 @@ function createGame() {
             // Camera follows the player
             camera.lockedTarget = warrior;
 
-            animationGroups.forEach(animation => {
-                animation.stop();
+
+            // Store all animations
+            animations = {};
+
+            animationGroups.forEach(group => {
+
+                animations[group.name] = group;
+
+                group.stop();
+
             });
+
+            playAnimation("CharacterArmature|Idle");
 
             // Play first animation
             // if (animationGroups.length > 0) {
@@ -304,15 +318,24 @@ function createGame() {
 
         }
 
-        //------------------------------------------
-        // Camera Follow
-        //------------------------------------------
-
-        camera.target.copyFrom(warrior.position);
-
     });
 
     return scene;
+
+}
+
+function playAnimation(name) {
+
+    if (currentAnimation === name) return;
+
+    // Stop every animation
+    Object.values(animations).forEach(anim => anim.stop());
+
+    // Play requested animation
+    if (animations[name]) {
+        animations[name].start(true);
+        currentAnimation = name;
+    }
 
 }
 
