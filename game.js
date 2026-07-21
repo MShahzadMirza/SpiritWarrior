@@ -209,6 +209,12 @@ function createGame() {
 
         let speed = keys["shift"] ? 0.15 : 0.08;
 
+        const isMoving =
+            keys["w"] ||
+            keys["a"] ||
+            keys["s"] ||
+            keys["d"];
+
         //------------------------------------------
         // Movement Input
         //------------------------------------------
@@ -226,6 +232,16 @@ function createGame() {
         //------------------------------------------
 
         if (moveX !== 0 || moveZ !== 0) {
+
+            if (keys["shift"]) {
+
+                playAnimation("CharacterArmature|Run");
+
+            } else {
+
+                playAnimation("CharacterArmature|Walk");
+
+            }
 
             const forward = camera.getForwardRay().direction;
 
@@ -257,6 +273,10 @@ function createGame() {
                 targetRotation,
                 0.15
             );
+
+        } else {
+
+            playAnimation("CharacterArmature|Idle");
 
         }
 
@@ -324,17 +344,21 @@ function createGame() {
 
 }
 
-function playAnimation(name) {
+function playAnimation(name, loop = true) {
 
     if (currentAnimation === name) return;
 
-    // Stop every animation
-    Object.values(animations).forEach(anim => anim.stop());
+    Object.values(animations).forEach(anim => {
+        anim.stop();
+    });
 
-    // Play requested animation
     if (animations[name]) {
-        animations[name].start(true);
+
+        animations[name].reset();
+        animations[name].start(loop);
+
         currentAnimation = name;
+
     }
 
 }
