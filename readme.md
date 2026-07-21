@@ -239,3 +239,19 @@ Possible future additions:
 Spirit Warrior will start as a small 3D game and gradually grow into a larger action adventure experience.
 
 The focus is to learn game development, build systems step by step, and create a unique world with its own characters, powers, and story.
+
+
+21-7-26
+Next Milestone (the fun part!)
+
+Once this works, we'll make the movement feel like a modern action RPG:
+
+✨ Smooth animation blending (no snapping)
+🎥 Better third-person camera
+🧭 Character always faces movement direction
+👊 Left-click punch combo (Punch_Left → Punch_Right)
+🗡️ Right-click sword slash
+🤸 Space to roll instead of jump
+💥 Hit reactions and enemies
+
+From this point on, your project will start feeling much more like a real action game rather than a simple character controller.
