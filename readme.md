@@ -255,3 +255,32 @@ Once this works, we'll make the movement feel like a modern action RPG:
 💥 Hit reactions and enemies
 
 From this point on, your project will start feeling much more like a real action game rather than a simple character controller.
+
+
+#Our Roadmap
+✅ Version 0.4
+Camera
+Movement
+Animations
+
+#Version 0.5
+Punch combo
+Sword attacks
+Roll
+Health
+
+#Version 0.6
+Enemy AI
+Lock-on
+Damage
+
+#Version 0.7
+Spirit Energy
+Skills
+UI
+
+#Version 0.8
+First playable level
+Enemy camp
+Collectibles
+Save system
